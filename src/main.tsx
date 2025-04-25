@@ -3,15 +3,15 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { RouterProvider } from "@tanstack/react-router";
+import { router } from "./router";
 
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-
-import App from "./App.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <GoogleOAuthProvider clientId={clientId}>
-      <App />
+      <RouterProvider router={router} />
     </GoogleOAuthProvider>
   </StrictMode>
 );
