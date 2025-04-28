@@ -23,11 +23,11 @@ const Login = () => {
         );
         const userInfo = await response.json();
         console.log("User Info:", userInfo);
+
+        navigate({ to: "/" });
       } catch (error) {
         console.error("Error fetching user info:", error);
       }
-
-      navigate({ to: "/" });
     },
     onError: (err) => console.log(err),
   });
