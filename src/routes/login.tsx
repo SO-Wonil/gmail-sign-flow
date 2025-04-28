@@ -1,12 +1,29 @@
-import { createRoute } from "@tanstack/react-router";
+import { createRoute, useNavigate } from "@tanstack/react-router";
+import { useGoogleLogin } from "@react-oauth/google";
+import { Button } from "@/components/ui/button";
+
 import { Route as RootRoute } from "./__root";
 
-import LoginButton from "@/components/button/login-button";
-
 const Login = () => {
+  const navigate = useNavigate();
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: (res) => {
+      console.log(res);
+      navigate({ to: "/" });
+    },
+    onError: (err) => console.log(err),
+  });
+
+  const handleGoogleLogin = () => {
+    googleLogin();
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <LoginButton />
+      <Button variant="ghost" onClick={handleGoogleLogin}>
+        Login
+      </Button>
     </div>
   );
 };
