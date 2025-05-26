@@ -3,6 +3,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 
 import { Button } from "@/components/ui/button";
 import { Route as RootRoute } from "./__root";
+import { User } from "@/types/user";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -21,8 +22,22 @@ const Login = () => {
             },
           }
         );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user info");
+        }
+
         const userInfo = await response.json();
-        console.log("User Info:", userInfo);
+
+        // store user info in local storage
+        const user: User = {
+          email: userInfo.email,
+          accessToken: accessToken,
+          firstName: userInfo.given_name,
+          lastName: userInfo.family_name,
+          imageUrl: userInfo.picture,
+        };
+        localStorage.setItem("userInfo", JSON.stringify(user));
 
         navigate({ to: "/" });
       } catch (error) {
@@ -30,6 +45,7 @@ const Login = () => {
       }
     },
     onError: (err) => console.log(err),
+    scope: "https://www.googleapis.com/auth/gmail.settings.basic",
   });
 
   const handleGoogleLogin = () => {
