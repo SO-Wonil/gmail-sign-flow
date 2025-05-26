@@ -37,8 +37,8 @@ export default function SignatureForm({
   const {
     register,
     handleSubmit,
-    reset,
-    setValue,
+    // reset,
+    // setValue,
     formState: { errors },
   } = useForm<SignatureFormData>({
     resolver: zodResolver(signatureSchema),
