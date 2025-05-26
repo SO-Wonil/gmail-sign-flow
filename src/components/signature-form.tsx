@@ -19,10 +19,21 @@ type SignatureFormData = z.infer<typeof signatureSchema>;
 
 interface SignatureFormProps {
   onUpdate: (data: SignatureFormData) => void;
+  defaultEmail: string;
 }
 
-export default function SignatureForm({ onUpdate }: SignatureFormProps) {
-  const [width, setWidth] = useState(400);
+export default function SignatureForm({
+  onUpdate,
+  defaultEmail,
+}: SignatureFormProps) {
+  const [formData, setFormData] = useState<SignatureFormData>({
+    name: "",
+    title: "",
+    phone: "",
+    email: defaultEmail,
+    width: 400,
+  });
+
   const {
     register,
     handleSubmit,
@@ -39,17 +50,30 @@ export default function SignatureForm({ onUpdate }: SignatureFormProps) {
   useEffect(() => {
     const savedData = localStorage.getItem("emailSignatureData");
     if (savedData) {
-      const data = JSON.parse(savedData);
-      Object.entries(data).forEach(([key, value]) => {
-        if (key === "width") {
-          setValue(key, Number(value));
-          setWidth(Number(value));
-        } else {
-          setValue(key as keyof SignatureFormData, value as string);
-        }
+      const parsedData = JSON.parse(savedData);
+      setFormData({
+        ...parsedData,
+        width: Number(parsedData.width),
       });
     }
-  }, [setValue]);
+  }, []);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: keyof SignatureFormData
+  ) => {
+    const value = e.target.value;
+    const newData = { ...formData, [field]: value };
+    setFormData(newData);
+    onUpdate(newData);
+  };
+
+  const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(e.target.value);
+    const newData = { ...formData, width: value };
+    setFormData(newData);
+    onUpdate(newData);
+  };
 
   const onSubmit = (data: SignatureFormData) => {
     localStorage.setItem("emailSignatureData", JSON.stringify(data));
@@ -57,16 +81,16 @@ export default function SignatureForm({ onUpdate }: SignatureFormProps) {
   };
 
   const handleReset = () => {
-    localStorage.removeItem("emailSignatureData");
-    reset();
-    setWidth(400);
-    onUpdate({
+    const resetData = {
       name: "",
       title: "",
       phone: "",
-      email: "",
+      email: defaultEmail,
       width: 400,
-    });
+    };
+    setFormData(resetData);
+    localStorage.removeItem("emailSignatureData");
+    onUpdate(resetData);
   };
 
   return (
@@ -81,6 +105,8 @@ export default function SignatureForm({ onUpdate }: SignatureFormProps) {
             id="name"
             placeholder="영어 이름을 입력하세요"
             {...register("name")}
+            value={formData.name}
+            onChange={(e) => handleChange(e, "name")}
           />
           {errors.name && (
             <p className="text-sm text-red-500">{errors.name.message}</p>
@@ -93,6 +119,8 @@ export default function SignatureForm({ onUpdate }: SignatureFormProps) {
             id="title"
             placeholder="직책과 팀을 입력하세요"
             {...register("title")}
+            value={formData.title}
+            onChange={(e) => handleChange(e, "title")}
           />
           {errors.title && (
             <p className="text-sm text-red-500">{errors.title.message}</p>
@@ -105,6 +133,8 @@ export default function SignatureForm({ onUpdate }: SignatureFormProps) {
             id="phone"
             placeholder="예: 82.10.0000.0000"
             {...register("phone")}
+            value={formData.phone}
+            onChange={(e) => handleChange(e, "phone")}
           />
           {errors.phone && (
             <p className="text-sm text-red-500">{errors.phone.message}</p>
@@ -117,6 +147,8 @@ export default function SignatureForm({ onUpdate }: SignatureFormProps) {
             id="email"
             placeholder="예: abcdefg.hijk@sonco.kr"
             {...register("email")}
+            value={formData.email}
+            onChange={(e) => handleChange(e, "email")}
           />
           {errors.email && (
             <p className="text-sm text-red-500">{errors.email.message}</p>
@@ -130,6 +162,8 @@ export default function SignatureForm({ onUpdate }: SignatureFormProps) {
             id="degree"
             placeholder="예: RPh, PharmD"
             {...register("degree")}
+            value={formData.degree}
+            onChange={(e) => handleChange(e, "degree")}
           />
         </div>
 
@@ -142,15 +176,11 @@ export default function SignatureForm({ onUpdate }: SignatureFormProps) {
               id="width"
               min="360"
               max="500"
-              value={width}
-              onChange={(e) => {
-                const value = parseInt(e.target.value);
-                setWidth(value);
-                setValue("width", value);
-              }}
+              value={formData.width}
+              onChange={handleWidthChange}
               className="w-[150px]"
             />
-            <span>{width}px</span>
+            <span>{formData.width}px</span>
           </div>
         </div>
       </div>
