@@ -1,0 +1,44 @@
+.signature-card {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  width: 100%;
+}
+
+.info-block {
+  vertical-align: top;
+  width: 100%;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.subtitle {
+  font-size: 12px;
+  font-weight: 400;
+  color: #808080;
+}
+
+.contact-block {
+  vertical-align: top;
+}
+
+.contact {
+  text-align: left;
+  font-size: 10px;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: #808080;
+}
+
+.contact-title {
+  font-weight: 600;
+  color: #000;
+}
+
+.disclaimer-text {
+  padding-top: 4px;
+  font-size: 8px;
+  line-height: 1.4;
+  color: #cdcdcd;
+}
