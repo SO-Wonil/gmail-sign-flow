@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Signature</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+
+  <body>
+    <!-- input form -->
+    <form>
+      <div style="margin-bottom: 20px">
+        <div class="input-container">
+          <label for="name">Name *</label>
+          <input
+            required
+            type="text"
+            id="input-name"
+            value=""
+            placeholder="영어 이름을 입력하세요."
+          />
+        </div>
+        <div class="input-container">
+          <label for="title_dept">Title | Dept. *</label>
+          <input
+            required
+            type="text"
+            id="input-title-dept"
+            value=""
+            placeholder="직책과 팀을 입력하세요."
+          />
+        </div>
+        <div class="input-container">
+          <label for="phone">Phone *</label>
+          <input
+            required
+            type="text"
+            id="input-phone"
+            value=""
+            placeholder="예: 82.10.0000.0000"
+          />
+        </div>
+        <div class="input-container">
+          <label for="email">Email *</label>
+          <input
+            required
+            type="text"
+            id="input-email"
+            value=""
+            placeholder="예: abcdefg.hijk@sonco.kr"
+          />
+        </div>
+        <div class="input-container">
+          <label for="degree">Degree</label>
+          <div class="help-text">미입력시 미표기</div>
+          <input
+            type="text"
+            id="input-degree"
+            value=""
+            placeholder="예: RPh, PharmD"
+          />
+        </div>
+        <div class="input-container">
+          <label for="width">서명란 너비</label>
+          <div class="help-text">360px ~ 500px</div>
+          <div style="display: flex; align-items: center; gap: 8px">
+            <input
+              type="range"
+              id="input-width"
+              value="400"
+              min="360"
+              max="500"
+              step="1"
+              style="width: 150px"
+            />
+            <span id="width-value">400px</span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="submit-container"
+        style="gap: 8px; display: flex; justify-content: flex-end"
+      >
+        <button type="button" class="reset-button" id="reset-button">
+          Reset
+        </button>
+        <button type="submit" class="submit-button">Update</button>
+      </div>
+    </form>
+    <!-- signature card -->
+    <table
+      class="signature-card"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+      style="width: auto; table-layout: auto; border-collapse: collapse"
+    >
+      <!-- profile section -->
+      <tr class="profile-section">
+        <td colspan="1">
+          <table width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <!-- info block -->
+              <td class="info-block">
+                <table>
+                  <tr>
+                    <td id="sig-name" class="name title">Name</td>
+                  </tr>
+                  <tr>
+                    <td class="space-block" style="height: 4px"></td>
+                  </tr>
+                  <tr>
+                    <td
+                      id="sig-title-dept"
+                      class="title_department subtitle"
+                      style="white-space: nowrap"
+                    >
+                      Title | Department
+                    </td>
+                  </tr>
+                  <tr>
+                    <td id="sig-degree" class="degree subtitle">Degree</td>
+                  </tr>
+                  <tr>
+                    <td class="space-block" style="height: 16px"></td>
+                  </tr>
+                </table>
+              </td>
+              <!-- contact block -->
+              <td class="contact-block">
+                <table>
+                  <tr>
+                    <td class="space-block"></td>
+                  </tr>
+                  <tr>
+                    <td class="contact">
+                      <b class="contact-title">t.</b>
+                      <span> 82.2.783.3116</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="contact">
+                      <b class="contact-title">m.</b>
+                      <span id="sig-phone"> 82.10.0000.0000</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="contact">
+                      <b class="contact-title">e.</b>
+                      <span id="sig-email">abcdefg.hijk@sonco.kr</span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="contact">
+                      <b class="contact-title">w.</b> https://sonco.kr
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      <!-- divider section -->
+      <tr class="divider-section">
+        <td style="padding-top: 8px">
+          <img
+            src="https://cdn.prod.website-files.com/652cda7e4101a54c2c782902/6805dd00a4cba42428d42d82_banner.png"
+            width="100%"
+            style="display: block; height: auto"
+            alt="divider"
+          />
+        </td>
+      </tr>
+
+      <!-- disclaimer section -->
+      <tr class="disclaimer-section">
+        <td class="disclaimer-text">
+          This email and any attachments to it may be confidential and are
+          intended solely for the use of the individual to whom it is addressed.
+          Any views or opinions expressed are solely those of the author and do
+          not necessarily represent those of SO & COMPANY Inc. If you are not
+          the intended recipient of this email, you must neither take any action
+          based on its contents nor copy or show it to anyone.Please contact the
+          sender if you believe you have received this email in error.
+        </td>
+      </tr>
+    </table>
+    <script src="./script.js"></script>
+  </body>
+</html>
