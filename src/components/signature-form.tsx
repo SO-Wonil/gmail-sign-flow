@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -46,6 +46,10 @@ export default function SignatureForm({
     },
   });
 
+  const [isEditingWidth, setIsEditingWidth] = useState(false);
+  const [editingWidth, setEditingWidth] = useState<string | number>(400);
+  const widthInputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     const savedData = localStorage.getItem("emailSignatureData");
     if (savedData) {
@@ -56,6 +60,10 @@ export default function SignatureForm({
       });
     }
   }, []);
+
+  useEffect(() => {
+    setEditingWidth(formData.width);
+  }, [isEditingWidth, formData.width]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -83,6 +91,42 @@ export default function SignatureForm({
     setFormData(resetData);
     localStorage.removeItem("emailSignatureData");
     onUpdate(resetData);
+  };
+
+  // width 직접 입력 핸들러
+  const handleWidthInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEditingWidth(value);
+  };
+
+  const handleWidthInputBlur = () => {
+    let value = Number(editingWidth);
+    if (isNaN(value) || value === 0) value = 360;
+    if (value < 360) value = 360;
+    if (value > 500) value = 500;
+    if (value !== formData.width) {
+      const newData = { ...formData, width: value };
+      setFormData(newData);
+      onUpdate(newData);
+    }
+    setIsEditingWidth(false);
+  };
+
+  const handleWidthInputKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (e.key === "Enter") {
+      let value = Number(editingWidth);
+      if (isNaN(value) || value === 0) value = 360;
+      if (value < 360) value = 360;
+      if (value > 500) value = 500;
+      if (value !== formData.width) {
+        const newData = { ...formData, width: value };
+        setFormData(newData);
+        onUpdate(newData);
+      }
+      setIsEditingWidth(false);
+    }
   };
 
   return (
@@ -168,15 +212,44 @@ export default function SignatureForm({
               min={360}
               max={500}
               step={1}
-              value={[formData.width]}
+              value={[
+                typeof editingWidth === "number"
+                  ? editingWidth
+                  : Number(editingWidth) || 360,
+              ]}
               onValueChange={(value) => {
-                const newData = { ...formData, width: value[0] };
-                setFormData(newData);
-                onUpdate(newData);
+                setEditingWidth(value[0]);
               }}
               className="w-[200px]"
+              disabled={isEditingWidth}
             />
-            <span className="min-w-[60px]">{formData.width}px</span>
+            {isEditingWidth ? (
+              <input
+                ref={widthInputRef}
+                type="number"
+                min={360}
+                max={500}
+                value={editingWidth}
+                onChange={handleWidthInputChange}
+                onBlur={handleWidthInputBlur}
+                onKeyDown={handleWidthInputKeyDown}
+                className="w-[60px] border rounded px-1 py-0.5 text-center text-sm"
+                autoFocus
+              />
+            ) : (
+              <span
+                className="min-w-[60px] cursor-pointer select-none border-b border-dotted border-gray-400 hover:bg-gray-100"
+                onClick={() => setIsEditingWidth(true)}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ")
+                    setIsEditingWidth(true);
+                }}
+                title="클릭해서 직접 입력"
+              >
+                {formData.width}px
+              </span>
+            )}
           </div>
         </div>
       </div>
