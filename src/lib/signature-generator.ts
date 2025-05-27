@@ -54,7 +54,7 @@ export function generateSignatureHtml(data: SignatureData): string {
                   </tr>
                   <tr>
                     <td style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 10px; line-height: 1.4; white-space: nowrap; color: #808080;">
-                      <b style="font-weight: 600; color: #000;">w.</b> https://sonco.kr
+                      <b style="font-weight: 600; color: #000;">w.</b> https://so.company
                     </td>
                   </tr>
                 </table>
@@ -69,7 +69,7 @@ export function generateSignatureHtml(data: SignatureData): string {
         </td>
       </tr>
       <tr>
-        <td style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 8px; line-height: 1.4; color: #cdcdcd;">
+        <td style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 8px; line-height: 1.4; color: #cdcdcd; padding-top: 8px;">
           This email and any attachments to it may be confidential and are intended solely for the use of the individual to whom it is addressed. Any views or opinions expressed are solely those of the author and do not necessarily represent those of SO & COMPANY Inc. If you are not the intended recipient of this email, you must neither take any action based on its contents nor copy or show it to anyone.Please contact the sender if you believe you have received this email in error.
         </td>
       </tr>
