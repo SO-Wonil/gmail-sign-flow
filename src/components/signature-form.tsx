@@ -5,6 +5,7 @@ import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 
 const signatureSchema = z.object({
   name: z.string().min(1, "이름을 입력해주세요"),
@@ -37,8 +38,6 @@ export default function SignatureForm({
   const {
     register,
     handleSubmit,
-    // reset,
-    // setValue,
     formState: { errors },
   } = useForm<SignatureFormData>({
     resolver: zodResolver(signatureSchema),
@@ -64,13 +63,6 @@ export default function SignatureForm({
   ) => {
     const value = e.target.value;
     const newData = { ...formData, [field]: value };
-    setFormData(newData);
-    onUpdate(newData);
-  };
-
-  const handleWidthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseInt(e.target.value);
-    const newData = { ...formData, width: value };
     setFormData(newData);
     onUpdate(newData);
   };
@@ -170,17 +162,21 @@ export default function SignatureForm({
         <div className="space-y-2">
           <Label htmlFor="width">서명란 너비</Label>
           <p className="text-xs text-gray-500">360px ~ 500px</p>
-          <div className="flex items-center gap-2">
-            <input
-              type="range"
+          <div className="flex items-center gap-4">
+            <Slider
               id="width"
-              min="360"
-              max="500"
-              value={formData.width}
-              onChange={handleWidthChange}
-              className="w-[150px]"
+              min={360}
+              max={500}
+              step={1}
+              value={[formData.width]}
+              onValueChange={(value) => {
+                const newData = { ...formData, width: value[0] };
+                setFormData(newData);
+                onUpdate(newData);
+              }}
+              className="w-[200px]"
             />
-            <span>{formData.width}px</span>
+            <span className="min-w-[60px]">{formData.width}px</span>
           </div>
         </div>
       </div>
