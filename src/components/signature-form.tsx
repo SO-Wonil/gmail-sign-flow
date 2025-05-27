@@ -37,7 +37,6 @@ export default function SignatureForm({
 
   const {
     register,
-    handleSubmit,
     formState: { errors },
   } = useForm<SignatureFormData>({
     resolver: zodResolver(signatureSchema),
@@ -72,12 +71,8 @@ export default function SignatureForm({
     const value = e.target.value;
     const newData = { ...formData, [field]: value };
     setFormData(newData);
+    localStorage.setItem("emailSignatureData", JSON.stringify(newData));
     onUpdate(newData);
-  };
-
-  const onSubmit = (data: SignatureFormData) => {
-    localStorage.setItem("emailSignatureData", JSON.stringify(data));
-    onUpdate(data);
   };
 
   const handleReset = () => {
@@ -107,6 +102,7 @@ export default function SignatureForm({
     if (value !== formData.width) {
       const newData = { ...formData, width: value };
       setFormData(newData);
+      localStorage.setItem("emailSignatureData", JSON.stringify(newData));
       onUpdate(newData);
     }
     setIsEditingWidth(false);
@@ -123,6 +119,7 @@ export default function SignatureForm({
       if (value !== formData.width) {
         const newData = { ...formData, width: value };
         setFormData(newData);
+        localStorage.setItem("emailSignatureData", JSON.stringify(newData));
         onUpdate(newData);
       }
       setIsEditingWidth(false);
@@ -130,10 +127,7 @@ export default function SignatureForm({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="w-full max-w-[400px] bg-white p-5 rounded-lg shadow-sm"
-    >
+    <div className="w-full max-w-[400px] bg-white p-5 rounded-lg shadow-sm">
       <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="name">Name *</Label>
@@ -213,15 +207,27 @@ export default function SignatureForm({
               max={500}
               step={1}
               value={[
-                typeof editingWidth === "number"
-                  ? editingWidth
-                  : Number(editingWidth) || 360,
+                isEditingWidth
+                  ? typeof editingWidth === "number"
+                    ? editingWidth
+                    : Number(editingWidth) || 360
+                  : formData.width,
               ]}
               onValueChange={(value) => {
-                setEditingWidth(value[0]);
+                if (isEditingWidth) {
+                  setEditingWidth(value[0]);
+                } else {
+                  const newData = { ...formData, width: value[0] };
+                  setFormData(newData);
+                  localStorage.setItem(
+                    "emailSignatureData",
+                    JSON.stringify(newData)
+                  );
+                  onUpdate(newData);
+                }
               }}
               className="w-[200px]"
-              disabled={isEditingWidth}
+              disabled={isEditingWidth && typeof editingWidth === "string"}
             />
             {isEditingWidth ? (
               <input
@@ -254,12 +260,11 @@ export default function SignatureForm({
         </div>
       </div>
 
-      <div className="flex justify-end gap-2 mt-6">
+      <div className="flex justify-end mt-6">
         <Button type="button" variant="outline" onClick={handleReset}>
           Reset
         </Button>
-        <Button type="submit">Update</Button>
       </div>
-    </form>
+    </div>
   );
 }

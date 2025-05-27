@@ -1,4 +1,4 @@
-import { createRoute, redirect } from "@tanstack/react-router";
+import { createRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Route as RootRoute } from "./__root";
 import SignatureForm from "@/components/signature-form";
 import SignatureCard from "@/components/signature-card";
@@ -17,6 +17,7 @@ interface SignatureData {
 }
 
 const Home = () => {
+  const navigate = useNavigate();
   const [signatureData, setSignatureData] = useState<SignatureData | null>(
     null
   );
@@ -73,13 +74,27 @@ const Home = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("userInfo");
+    navigate({ to: "/login" });
+  };
+
   return (
-    <div className="flex justify-center items-start gap-8 p-8 min-h-screen bg-gray-50">
+    <div className="flex justify-center items-start gap-8 p-8 pt-16 min-h-screen bg-gray-50">
       <div className="flex flex-col gap-4">
-        <SignatureForm
-          onUpdate={handleSignatureUpdate}
-          defaultEmail={userEmail}
-        />
+        <div className="relative">
+          <Button
+            variant="ghost"
+            onClick={handleLogout}
+            className="absolute -top-12 left-0"
+          >
+            로그아웃
+          </Button>
+          <SignatureForm
+            onUpdate={handleSignatureUpdate}
+            defaultEmail={userEmail}
+          />
+        </div>
         <Button
           onClick={handleUpload}
           disabled={!signatureData || isUploading}
