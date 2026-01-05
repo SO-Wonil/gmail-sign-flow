@@ -1,4 +1,35 @@
-import { SignatureData } from "../types/signature";
+import { SignatureData, SIGNATURE_TEMPLATES } from "../types/signature";
+
+function getBannerHtml(data: SignatureData): string {
+  const template = SIGNATURE_TEMPLATES.find((t) => t.id === data.template);
+
+  // 10주년 기념 템플릿: 배너 이미지 표시
+  if (template?.bannerUrl) {
+    return `
+      <tr>
+        <td style="padding-top: 8px;">
+          <img src="${template.bannerUrl}" width="100%" style="display: block; height: auto;" alt="banner" />
+        </td>
+      </tr>`;
+  }
+
+  // 기본 템플릿: 구분선 표시 (서명란 너비에 맞춤)
+  if (template?.id === "default") {
+    const lineColor = data.lineColor || "#4193c6";
+    return `
+      <tr>
+        <td style="padding-top: 8px;">
+          <table cellpadding="0" cellspacing="0" border="0" width="${data.width}" style="border-collapse: collapse;">
+            <tr>
+              <td style="height: 3px; background-color: ${lineColor}; line-height: 0; font-size: 0;">&nbsp;</td>
+            </tr>
+          </table>
+        </td>
+      </tr>`;
+  }
+
+  return "";
+}
 
 export function generateSignatureHtml(data: SignatureData): string {
   return `
@@ -62,12 +93,7 @@ export function generateSignatureHtml(data: SignatureData): string {
             </tr>
           </table>
         </td>
-      </tr>
-      <tr>
-        <td style="padding-top: 8px;">
-          <img src="https://cdn.prod.website-files.com/652cda7e4101a54c2c782902/6805dd00a4cba42428d42d82_banner.png" width="100%" style="display: block; height: auto;" alt="divider" />
-        </td>
-      </tr>
+      </tr>${getBannerHtml(data)}
       <tr>
         <td style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 8px; line-height: 1.4; color: #cdcdcd; padding-top: 8px;">
           This email and any attachments to it may be confidential and are intended solely for the use of the individual to whom it is addressed. Any views or opinions expressed are solely those of the author and do not necessarily represent those of SO & COMPANY Inc. If you are not the intended recipient of this email, you must neither take any action based on its contents nor copy or show it to anyone.Please contact the sender if you believe you have received this email in error.

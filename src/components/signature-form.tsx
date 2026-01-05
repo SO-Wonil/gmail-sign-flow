@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { SignatureTemplate } from "@/types/signature";
 
 const signatureSchema = z.object({
   name: z.string().min(1, "이름을 입력해주세요"),
@@ -14,6 +15,7 @@ const signatureSchema = z.object({
   email: z.string().email("올바른 이메일 형식이 아닙니다"),
   degree: z.string().optional(),
   width: z.number().min(360).max(500),
+  lineColor: z.string().optional(),
 });
 
 type SignatureFormData = z.infer<typeof signatureSchema>;
@@ -21,11 +23,13 @@ type SignatureFormData = z.infer<typeof signatureSchema>;
 interface SignatureFormProps {
   onUpdate: (data: SignatureFormData) => void;
   defaultEmail: string;
+  selectedTemplate?: SignatureTemplate;
 }
 
 export default function SignatureForm({
   onUpdate,
   defaultEmail,
+  selectedTemplate,
 }: SignatureFormProps) {
   const [formData, setFormData] = useState<SignatureFormData>({
     name: "",
@@ -33,7 +37,10 @@ export default function SignatureForm({
     phone: "",
     email: defaultEmail,
     width: 400,
+    lineColor: "#4193c6",
   });
+
+  const isLineColorDisabled = selectedTemplate === "10th-anniversary";
 
   const {
     register,
@@ -56,6 +63,7 @@ export default function SignatureForm({
       setFormData({
         ...parsedData,
         width: Number(parsedData.width),
+        lineColor: parsedData.lineColor || "#4193c6",
       });
     }
   }, []);
@@ -82,10 +90,19 @@ export default function SignatureForm({
       phone: "",
       email: defaultEmail,
       width: 400,
+      lineColor: "#4193c6",
     };
     setFormData(resetData);
     localStorage.removeItem("emailSignatureData");
     onUpdate(resetData);
+  };
+
+  const handleLineColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    const newData = { ...formData, lineColor: value };
+    setFormData(newData);
+    localStorage.setItem("emailSignatureData", JSON.stringify(newData));
+    onUpdate(newData);
   };
 
   // width 직접 입력 핸들러
@@ -256,6 +273,41 @@ export default function SignatureForm({
                 {formData.width}px
               </span>
             )}
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label
+            htmlFor="lineColor"
+            className={isLineColorDisabled ? "text-gray-400" : ""}
+          >
+            구분선 색상
+          </Label>
+          <p className="text-xs text-gray-500">
+            {isLineColorDisabled
+              ? "10주년 양식은 배너 이미지를 사용합니다"
+              : "구분선 색상을 선택하세요"}
+          </p>
+          <div className="flex items-center gap-3">
+            <input
+              id="lineColor"
+              type="color"
+              value={formData.lineColor || "#4193c6"}
+              onChange={handleLineColorChange}
+              disabled={isLineColorDisabled}
+              className={`w-10 h-10 rounded border cursor-pointer ${
+                isLineColorDisabled
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:border-gray-400"
+              }`}
+            />
+            <span
+              className={`text-sm ${
+                isLineColorDisabled ? "text-gray-400" : ""
+              }`}
+            >
+              {formData.lineColor || "#4193c6"}
+            </span>
           </div>
         </div>
       </div>

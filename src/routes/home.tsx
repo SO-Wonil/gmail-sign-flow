@@ -6,6 +6,17 @@ import "@/styles/signature.css";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { updateGmailSignature } from "@/lib/gmail";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  SignatureTemplate,
+  SIGNATURE_TEMPLATES,
+} from "@/types/signature";
 
 interface SignatureData {
   name: string;
@@ -14,6 +25,8 @@ interface SignatureData {
   email: string;
   degree?: string;
   width: number;
+  template?: SignatureTemplate;
+  lineColor?: string;
 }
 
 const Home = () => {
@@ -23,6 +36,8 @@ const Home = () => {
   );
   const [isUploading, setIsUploading] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<SignatureTemplate>("10th-anniversary");
 
   useEffect(() => {
     // 로그인한 사용자의 이메일 가져오기
@@ -39,7 +54,11 @@ const Home = () => {
       setSignatureData({
         ...parsedData,
         width: Number(parsedData.width),
+        template: parsedData.template || selectedTemplate,
       });
+      if (parsedData.template) {
+        setSelectedTemplate(parsedData.template);
+      }
     } else if (userEmail) {
       // 저장된 데이터가 없고 이메일이 있는 경우 기본값 설정
       setSignatureData({
@@ -48,12 +67,20 @@ const Home = () => {
         phone: "",
         email: userEmail,
         width: 400,
+        template: selectedTemplate,
       });
     }
   }, [userEmail]);
 
   const handleSignatureUpdate = (data: SignatureData) => {
-    setSignatureData(data);
+    setSignatureData({ ...data, template: selectedTemplate });
+  };
+
+  const handleTemplateChange = (value: SignatureTemplate) => {
+    setSelectedTemplate(value);
+    if (signatureData) {
+      setSignatureData({ ...signatureData, template: value });
+    }
   };
 
   const handleUpload = async () => {
@@ -93,6 +120,7 @@ const Home = () => {
           <SignatureForm
             onUpdate={handleSignatureUpdate}
             defaultEmail={userEmail}
+            selectedTemplate={selectedTemplate}
           />
         </div>
         <Button
@@ -103,8 +131,27 @@ const Home = () => {
           {isUploading ? "업로드 중..." : "Gmail 서명 업로드"}
         </Button>
       </div>
-      <div className="sticky top-8 bg-white p-5 rounded-lg shadow-sm">
-        <SignatureCard data={signatureData} />
+      <div className="sticky top-8">
+        <div className="mb-3">
+          <Select
+            value={selectedTemplate}
+            onValueChange={handleTemplateChange}
+          >
+            <SelectTrigger className="w-full bg-white">
+              <SelectValue placeholder="서명 양식 선택" />
+            </SelectTrigger>
+            <SelectContent>
+              {SIGNATURE_TEMPLATES.map((template) => (
+                <SelectItem key={template.id} value={template.id}>
+                  {template.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="bg-white p-5 rounded-lg shadow-sm">
+          <SignatureCard data={signatureData} />
+        </div>
       </div>
     </div>
   );
